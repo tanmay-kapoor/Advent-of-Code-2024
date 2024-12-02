@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Solution {
   int start() {
     String dir = System.getProperty("user.dir") + "/src";
-    File file = new File(dir + "/day1/sample.txt");
+    File file = new File(dir + "/template/sample.txt");
 
     int ans = 0;
     try {
