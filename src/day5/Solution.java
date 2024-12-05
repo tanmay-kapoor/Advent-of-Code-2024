@@ -2,6 +2,7 @@ package day5;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -9,7 +10,7 @@ import java.util.Set;
 public class Solution {
   int start() {
     String dir = System.getProperty("user.dir") + "/src";
-    File file = new File(dir + "/day5/sample.txt");
+    File file = new File(dir + "/day5/input.txt");
 
     int ans = 0;
     try {
@@ -42,12 +43,27 @@ public class Solution {
             }
           }
 
-          if (isValid) {
+//          // Part 1
+//          if (isValid) {
+//            int val = Integer.parseInt(nums[nums.length / 2]);
+//            ans += val;
+//            System.out.println("valid " + val);
+//          } else {
+//            System.out.println("invalid");
+//          }
+
+          // Part 2
+          if (!isValid) {
+            Arrays.sort(nums, (a, b) -> {
+              String str = a + "|" + b;
+              if (set.contains(str)) {
+                return -1;
+              }
+              return 0;
+            });
+
             int val = Integer.parseInt(nums[nums.length / 2]);
             ans += val;
-            System.out.println("valid " + val);
-          } else {
-            System.out.println("invalid");
           }
         }
       }
