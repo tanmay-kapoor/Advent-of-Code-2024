@@ -40,6 +40,42 @@ public class Solution {
     }
   }
 
+  boolean formsLoop(List<char[]> grid, int r, int c, int startRow, int startCol) {
+    grid.get(r)[c] = '#';
+    Set<String> set = new HashSet<>();
+
+    int currRow = startRow, currCol = startCol;
+    String dir = "up";
+    set.add("(" + currRow + "," + currCol + ")" + dir);
+
+    boolean ans;
+    while (true) {
+      int[] newVals = getNextValues(currRow, currCol, dir);
+      int newRow = newVals[0];
+      int newCol = newVals[1];
+
+      if (newRow < 0 || newRow >= grid.size() || newCol < 0 || newCol >= grid.getFirst().length) {
+        ans = false;
+        break;
+      }
+
+      if (grid.get(newRow)[newCol] == '#') {
+        dir = turn90Degree(dir);
+      } else {
+        currRow = newRow;
+        currCol = newCol;
+        String str = "(" + currRow + "," + currCol + ")" + dir;
+        if (set.contains(str)) {
+          ans = true;
+          break;
+        }
+        set.add(str);
+      }
+    }
+    grid.get(r)[c] = '.';
+    return ans;
+  }
+
   int start() {
     String dire = System.getProperty("user.dir") + "/src";
     File file = new File(dire + "/day6/input.txt");
@@ -60,9 +96,15 @@ public class Solution {
         i++;
       }
 
+      char[][] g = new char[grid.size()][grid.getFirst().length];
+      for (int r = 0; r < grid.size(); r++) {
+        g[r] = grid.get(r);
+      }
+
       Set<String> set = new HashSet<>();
       int currRow = startRow, currCol = startCol;
       String dir = "up";
+      g[currRow][currCol] = 'X';
       set.add("(" + currRow + "," + currCol + ")");
 
       while (true) {
@@ -79,11 +121,26 @@ public class Solution {
         } else {
           currRow = newRow;
           currCol = newCol;
+          g[currRow][currCol] = 'X';
           set.add("(" + currRow + "," + currCol + ")");
         }
       }
 
-      return set.size();
+//      return set.size();
+
+      int cnt = 0;
+      for (String s : set) {
+        int e = s.indexOf(",");
+        int r = Integer.parseInt(s.substring(1, e));
+        int c = Integer.parseInt(s.substring(e + 1, s.length() - 1));
+        if (r != startRow || c != startCol) {
+          if (formsLoop(grid, r, c, startRow, startCol)) {
+//            System.out.println("(" + r + "," + c + ")");
+            cnt++;
+          }
+        }
+      }
+      return cnt;
     } catch (FileNotFoundException e) {
       System.out.println("File not found");
     }
