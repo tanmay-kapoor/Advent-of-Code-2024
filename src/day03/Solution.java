@@ -1,4 +1,4 @@
-package day3;
+package day03;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class Solution {
   long start() {
     String dir = System.getProperty("user.dir") + "/src";
-    File file = new File(dir + "/day3/input.txt");
+    File file = new File(dir + "/day03/input.txt");
 
     long ans = 0L;
     try {

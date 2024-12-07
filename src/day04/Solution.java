@@ -1,4 +1,4 @@
-package day4;
+package day04;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +12,7 @@ public class Solution {
 
   int start() {
     String dir = System.getProperty("user.dir") + "/src";
-    File file = new File(dir + "/day4/input.txt");
+    File file = new File(dir + "/day04/input.txt");
 
     int ans = 0;
     List<char[]> grid = new ArrayList<>();

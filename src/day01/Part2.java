@@ -1,39 +1,39 @@
-package day1;
+package day01;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
-public class Part1 {
+public class Part2 {
   int start() {
     String dir = System.getProperty("user.dir") + "/src";
-    File file = new File(dir + "/day1/sample.txt");
+    File file = new File(dir + "/day01/sample.txt");
 
     int ans = 0;
     try {
       Scanner sc = new Scanner(file);
-      
+
       List<Integer> nums1 = new ArrayList<>();
-      List<Integer> nums2 = new ArrayList<>();
+
+      Map<Integer, Integer> map = new HashMap<>();
 
       while (sc.hasNextLine()) {
         String line = sc.nextLine();
         String[] vals = line.split("\\s+");
-        nums1.add(Integer.parseInt(vals[0]));
-        nums2.add(Integer.parseInt(vals[1]));
+        int num1 = Integer.parseInt(vals[0]);
+        int num2 = Integer.parseInt(vals[1]);
+        nums1.add(num1);
+
+        map.put(num2, map.getOrDefault(num2, 0) + 1);
       }
 
-      Collections.sort(nums1);
-      Collections.sort(nums2);
-
-      for(int i = 0; i < nums1.size(); i++) {
-        int num1 = nums1.get(i);
-        int num2 = nums2.get(i);
-        int dist = Math.abs(num1 - num2);
-        ans += dist;
+      for (int i = 0; i < nums1.size(); i++) {
+        int num = nums1.get(i);
+        ans = ans + (num * map.getOrDefault(num, 0));
       }
 
       return ans;
@@ -44,7 +44,7 @@ public class Part1 {
   }
 
   public static void main(String[] args) {
-    Part1 ob = new Part1();
+    Part2 ob = new Part2();
     System.out.println(ob.start());
   }
 }

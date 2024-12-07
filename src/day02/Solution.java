@@ -1,4 +1,4 @@
-package day2;
+package day02;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +36,7 @@ public class Solution {
 
   int start() {
     String dir = System.getProperty("user.dir") + "/src";
-    File file = new File(dir + "/day2/input.txt");
+    File file = new File(dir + "/day02/input.txt");
 
     int ans = 0;
     try {
