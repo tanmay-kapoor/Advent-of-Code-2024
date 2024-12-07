@@ -21,8 +21,11 @@ public class Solution {
       return false;
     }
 
-    return isPossible(exp + "+" + nums[i], nums, target, curr + nums[i], i + 1) ||
-            isPossible(exp + "*" + nums[i], nums, target, curr * nums[i], i + 1);
+    long newVal = Long.parseLong(Long.toString(curr).concat(Long.toString(nums[i])));
+
+    return isPossible(exp + " + " + nums[i], nums, target, curr + nums[i], i + 1) ||
+            isPossible(exp + " * " + nums[i], nums, target, curr * nums[i], i + 1) ||
+            isPossible(exp + " || " + nums[i], nums, target, newVal, i + 1);
   }
 
   long start() {
