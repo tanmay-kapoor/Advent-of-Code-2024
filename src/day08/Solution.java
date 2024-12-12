@@ -45,41 +45,82 @@ public class Solution {
             int x = Math.abs(a[0] - b[0]);
             int y = Math.abs(a[1] - b[1]);
             if (a[1] < b[1]) {
-              int nr = a[0] - x;
-              int nc = a[1] - y;
-              if (nr >= 0 && nc >= 0 && grid[nr][nc] != '#') {
-                ans++;
-                grid[nr][nc] = '#';
+              int cr = a[0];
+              int cc = a[1];
+
+              while (true) {
+                int nr = cr - x;
+                int nc = cc - y;
+                if (nr >= 0 && nc >= 0) {
+                  if (grid[nr][nc] == '.') {
+                    grid[nr][nc] = '#';
+                  }
+                } else {
+                  break;
+                }
+                cr = nr;
+                cc = nc;
               }
 
-              nr = b[0] + x;
-              nc = b[1] + y;
-              if (nr < grid.length && nc < grid[0].length && grid[nr][nc] != '#') {
-                ans++;
-                grid[nr][nc] = '#';
+              cr = b[0];
+              cc = b[1];
+
+              while (true) {
+                int nr = cr + x;
+                int nc = cc + y;
+                if (nr < grid.length && nc < grid[0].length) {
+                  if (grid[nr][nc] == '.') {
+                    grid[nr][nc] = '#';
+                  }
+                } else {
+                  break;
+                }
+                cr = nr;
+                cc = nc;
               }
             } else {
-              int nr = a[0] - x;
-              int nc = a[1] + y;
-              if (nr >= 0 && nc < grid[0].length && grid[nr][nc] != '#') {
-                ans++;
-                grid[nr][nc] = '#';
+              int cr = a[0];
+              int cc = a[1];
+
+              while (true) {
+                int nr = cr - x;
+                int nc = cc + y;
+                if (nr >= 0 && nc < grid[0].length) {
+                  if (grid[nr][nc] == '.') {
+                    grid[nr][nc] = '#';
+                  }
+                } else {
+                  break;
+                }
+                cr = nr;
+                cc = nc;
               }
 
-              nr = b[0] + x;
-              nc = b[1] - y;
-              if (nr < grid.length && nc >= 0 && grid[nr][nc] != '#') {
-                ans++;
-                grid[nr][nc] = '#';
+              cr = b[0];
+              cc = b[1];
+
+              while (true) {
+                int nr = cr + x;
+                int nc = cc - y;
+                if (nr < grid.length && nc >= 0) {
+                  if (grid[nr][nc] == '.') {
+                    grid[nr][nc] = '#';
+                  }
+                } else {
+                  break;
+                }
+                cr = nr;
+                cc = nc;
               }
             }
           }
         }
       }
 
-      for(int i = 0; i<grid.length; i++) {
-        for(int j = 0; j<grid[0].length; j++) {
-          System.out.print(grid[i][j]);
+      for (char[] chars : grid) {
+        for (int j = 0; j < grid[0].length; j++) {
+          System.out.print(chars[j]);
+          if (chars[j] != '.') ans++;
         }
         System.out.println();
       }
