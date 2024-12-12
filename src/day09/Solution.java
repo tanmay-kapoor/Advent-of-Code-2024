@@ -9,11 +9,24 @@ import java.util.Scanner;
 public class Solution {
   class Node {
     int val;
+    int freq;
 
-    public Node(int val) {
+    public Node(int val, int freq) {
       this.val = val;
+      this.freq = freq;
     }
   }
+
+//  void print(List<Node> list) {
+//    for (int i = 0; i < list.size(); i++) {
+//      if (list.get(i).val == -1) {
+//        System.out.print(".".repeat(list.get(i).freq));
+//      } else {
+//        System.out.print(Integer.toString(list.get(i).val).repeat(list.get(i).freq));
+//      }
+//    }
+//    System.out.println();
+//  }
 
   long start() {
     String dir = System.getProperty("user.dir") + "/src";
@@ -31,39 +44,56 @@ public class Solution {
         int num = input.charAt(i) - '0';
 
         if (i % 2 == 0) {
-          while (num-- > 0) {
-            list.add(new Node(id));
-          }
-          id++;
+          list.add(new Node(id++, num));
         } else {
-          while (num-- > 0) {
-            list.add(new Node(-1));
-          }
+          list.add(new Node(-1, num));
         }
       }
 
-      for (int i = 0, j = list.size() - 1; i <= j; ) {
-        Node left = list.get(i);
+//      print(list);
+      for (int j = list.size() - 1; j >= 0; j--) {
         Node right = list.get(j);
+        if (right.val == -1) continue;
 
-        if (left.val != -1 && right.val != -1) {
-          i++;
-        } else if (left.val == -1 && right.val != -1) {
-          left.val = right.val;
-          right.val = -1;
-          i++;
-          j--;
-        } else if (left.val == -1) {
-          j--;
-        } else {
-          i++;
-          j--;
+        for (int i = 0; i < j; ) {
+          Node left = list.get(i);
+
+          if (left.val != -1) {
+            i++;
+          } else if (left.freq >= right.freq) {
+            int diff = left.freq - right.freq;
+
+            left.val = right.val;
+            left.freq = right.freq;
+
+            right.val = -1;
+
+            if (diff > 0) {
+              Node node = new Node(-1, diff);
+              list.add(i + 1, node);
+              j++;
+            }
+            break;
+          } else {
+            i++;
+          }
         }
+//        print(list);
       }
 
+//      print(list);
+
+      int idx = 0;
       for (int i = 0; i < list.size(); i++) {
         if (list.get(i).val != -1) {
-          ans += ((long) i * list.get(i).val);
+          int f = list.get(i).freq;
+          int x = 0;
+          while (x++ < f) {
+            ans += ((long) idx * list.get(i).val);
+            idx++;
+          }
+        } else {
+          idx+= list.get(i).freq;
         }
       }
 
