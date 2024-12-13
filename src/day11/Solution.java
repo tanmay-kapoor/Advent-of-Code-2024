@@ -2,35 +2,44 @@ package day11;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Solution {
 
-  long dfs(String val, int depth) {
-    if (depth == 25) {
-      return 1;
+  Map<Long, Long> dfs(Map<Long, Long> map, int depth) {
+//    System.out.println(map);
+    if (depth == 0) {
+      return map;
     }
 
-    long cnt = 0L;
+    Map<Long, Long> map2 = new HashMap<>();
 
-    switch (val.length() % 2) {
-      case 0:
-        String p1 = val.substring(0, val.length() / 2);
-        String p2 = val.substring(val.length() / 2).replaceAll("^0+(?!$)", "");
-        cnt = dfs(p1, depth + 1) + dfs(p2, depth + 1);
-        break;
+    for (long num : map.keySet()) {
+      long freq = map.get(num);
 
-      case 1:
-        if (val.equals("0")) {
-          cnt = dfs("1", depth + 1);
+      if (num == 0L) {
+        map2.put(1L, map2.getOrDefault(1L, 0L) + freq);
+      } else {
+        String str = Long.toString(num);
+
+        if (str.length() % 2 == 1) {
+          map2.put(num * 2024, map2.getOrDefault(num * 2024, 0L) + freq);
         } else {
-          String nv = Long.toString(Long.parseLong(val) * 2024);
-          cnt = dfs(nv, depth + 1);
+          String p1 = str.substring(0, str.length() / 2);
+          long num1 = Long.parseLong(p1);
+
+          String p2 = str.substring(str.length() / 2);
+          long num2 = Long.parseLong(p2);
+
+          map2.put(num1, map2.getOrDefault(num1, 0L) + freq);
+          map2.put(num2, map2.getOrDefault(num2, 0L) + freq);
         }
-        break;
+      }
     }
 
-    return cnt;
+    return dfs(map2, depth - 1);
   }
 
   long start() {
@@ -41,11 +50,17 @@ public class Solution {
     try {
       Scanner sc = new Scanner(file);
       String input = sc.nextLine();
+      Map<Long, Long> map = new HashMap<>();
 
       String[] vals = input.split(" ");
+      for (String val : vals) {
+        long num = Long.parseLong(val);
+        map.put(num, map.getOrDefault(num, 0L) + 1);
+      }
 
-      for (int i = 0; i < vals.length; i++) {
-        ans += dfs(vals[i], 0);
+      map = dfs(map, 75);
+      for (Long num : map.keySet()) {
+        ans += map.get(num);
       }
 
     } catch (FileNotFoundException e) {
