@@ -3,10 +3,8 @@ package day10;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 public class Solution {
   int start() {
@@ -34,9 +32,7 @@ public class Solution {
       for (int i = 0; i < grid.length; i++) {
         for (int j = 0; j < grid[i].length; j++) {
           if (grid[i][j] == 0) {
-            Set<String> set = new HashSet<>();
-            dfs(grid, i, j, 0, set);
-            ans += set.size();
+            ans += dfs(grid, i, j, 0);
           }
         }
       }
@@ -48,20 +44,23 @@ public class Solution {
     return ans;
   }
 
-  void dfs(int[][] grid, int i, int j, int reqd, Set<String> set) {
-    if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != reqd) {
-      return;
+  int dfs(int[][] grid, int i, int j, int reqd) {
+    if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] == -1 || grid[i][j] != reqd) {
+      return 0;
     }
 
-    if (grid[i][j] == 9) {
-      set.add(i + "," + j);
-      return;
-    }
+    if (grid[i][j] == 9) return 1;
+    grid[i][j] = -1;
 
-    dfs(grid, i, j + 1, reqd + 1, set);
-    dfs(grid, i + 1, j, reqd + 1, set);
-    dfs(grid, i, j - 1, reqd + 1, set);
-    dfs(grid, i - 1, j, reqd + 1, set);
+    int cnt = 0;
+    cnt += dfs(grid, i, j + 1, reqd + 1);
+    cnt += dfs(grid, i + 1, j, reqd + 1);
+    cnt += dfs(grid, i, j - 1, reqd + 1);
+    cnt += dfs(grid, i - 1, j, reqd + 1);
+
+    grid[i][j] = reqd;
+
+    return cnt;
   }
 
   public static void main(String[] args) {
