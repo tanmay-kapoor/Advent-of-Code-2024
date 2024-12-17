@@ -8,10 +8,6 @@ import java.util.Scanner;
 
 public class Solution {
   int width = 101, height = 103;
-  int seconds = 100;
-
-  int xMid = width / 2;
-  int yMid = height / 2;
 
   static class Point {
     int x, y, vx, vy;
@@ -28,11 +24,42 @@ public class Solution {
     }
   }
 
+  void print(List<String> grid) {
+    for (String s : grid) {
+      System.out.println(s);
+    }
+    System.out.println();
+  }
+
+  List<String> getGrid(List<Point> list) {
+    List<String> grid = new ArrayList<>();
+    for (int i = 0; i < height; i++) {
+      grid.add(".".repeat(Math.max(0, width)));
+    }
+
+    for (Point p : list) {
+      StringBuilder sb = new StringBuilder(grid.get(p.y));
+      sb.setCharAt(p.x, '#');
+      grid.set(p.y, sb.toString());
+    }
+
+    return grid;
+  }
+
+  boolean tenInLine(List<String> grid) {
+    for (int i = 0; i < height; i++) {
+      if (grid.get(i).contains("##########")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   int start() {
     String dir = System.getProperty("user.dir") + "/src";
     File file = new File(dir + "/day14/input.txt");
 
-    int ans = 0;
+    int ans = 0, currSec = 1;
     try {
       Scanner sc = new Scanner(file);
       List<Point> list = new ArrayList<>();
@@ -52,7 +79,7 @@ public class Solution {
         list.add(new Point(x, y, vx, vy));
       }
 
-      for (int i = 0; i < seconds; i++) {
+      while (true) {
         for (Point p : list) {
           p.x += p.vx;
           if (p.x < 0 && p.vx < 0) {
@@ -68,23 +95,13 @@ public class Solution {
             p.y -= height;
           }
         }
-      }
 
-      int[] q = new int[4];
-
-      for (Point p : list) {
-        if (p.x < xMid && p.y < yMid) {
-          q[0]++;
-        } else if (p.x > xMid && p.y < yMid) {
-          q[1]++;
-        } else if (p.x < xMid && p.y > yMid) {
-          q[2]++;
-        } else if (p.x > xMid && p.y > yMid) {
-          q[3]++;
+        if (tenInLine(getGrid(list))) {
+          print(getGrid(list));
+          return currSec;
         }
+        currSec++;
       }
-
-      return q[0] * q[1] * q[2] * q[3];
     } catch (FileNotFoundException e) {
       System.out.println("File not found");
     }
