@@ -8,7 +8,6 @@ public class Solution {
   int dayNum;
   String aocDir, fileName, inputFilePath;
 
-
   long start() throws FileNotFoundException {
     Scanner sc = new Scanner(new File(inputFilePath));
     long ans = 0L;
