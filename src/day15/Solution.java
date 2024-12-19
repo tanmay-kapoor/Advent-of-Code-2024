@@ -32,9 +32,8 @@ public class Solution {
     long ans = 0L;
     for (int i = 0; i < grid.size(); i++) {
       for (int j = 0; j < grid.get(i).length; j++) {
-        if (grid.get(i)[j] == 'O') {
-          long val = 100L * i + j;
-          ans += val;
+        if (grid.get(i)[j] == '[') {
+          ans += 100L * i + j;
         }
       }
     }
@@ -57,35 +56,105 @@ public class Solution {
   Location move(List<char[]> grid, Location loc, char move) {
     int[] vals = map.get(move);
 
-    boolean found = false;
-    int boxes = 0;
+    if (move == '<' || move == '>') {
+      boolean found = false;
+      int row = loc.row;
+      int col = loc.col + vals[1];
 
-    int i = loc.row + vals[0];
-    int j = loc.col + vals[1];
-    while (i > 0 && j > 0 && i < grid.size() - 1 && j < grid.get(i).length - 1) {
-      if (grid.get(i)[j] == '.') {
-        found = true;
-        break;
-      } else if (grid.get(i)[j] == '#') {
-        break;
-      } else {
-        boxes++;
+      while (col > 1 && col < grid.getFirst().length - 2) {
+        char ch = grid.get(row)[col];
+        if (ch == '#') {
+          break;
+        }
+
+        if (ch == '.') {
+          found = true;
+          break;
+        }
+
+        col += vals[1];
       }
-      i += vals[0];
-      j += vals[1];
+
+      if (!found) {
+        return loc;
+      }
+
+      int newCol = col;
+      row = loc.row;
+      col = loc.col;
+
+      while (newCol != col) {
+        grid.get(row)[newCol] = grid.get(row)[newCol - vals[1]];
+        newCol -= vals[1];
+      }
+
+      grid.get(row)[col] = '.';
+      return new Location(row, col + vals[1]);
+    } else {
+      int row = loc.row;
+      int col = loc.col;
+
+      boolean[][] visited = new boolean[grid.size()][grid.getFirst().length];
+      boolean found = find(grid, row + vals[0], col, vals[0], visited);
+
+      if (!found) {
+        return loc;
+      }
+
+      visited = new boolean[grid.size()][grid.getFirst().length];
+      changeGrid(grid, row + vals[0], col, vals[0], visited, grid.get(row)[col]);
+
+      grid.get(row)[col] = '.';
+      return new Location(row + vals[0], col);
+    }
+  }
+
+  boolean find(List<char[]> grid, int row, int col, int val, boolean[][] visited) {
+    if (row < 0 || row > grid.size() || col < 0 || col > grid.getFirst().length - 1 || grid.get(row)[col] == '#') {
+      return false;
     }
 
-    if (!found) {
-      return loc;
+    visited[row][col] = true;
+
+    if (grid.get(row)[col] == '.') {
+      return true;
     }
 
-    Location nextLoc = new Location(loc.row + vals[0], loc.col + vals[1]);
-    grid.get(loc.row)[loc.col] = '.';
-    grid.get(loc.row + vals[0])[loc.col + vals[1]] = '@';
-    if (boxes > 0) {
-      grid.get(loc.row + (boxes + 1) * vals[0])[loc.col + (boxes + 1) * vals[1]] = 'O';
+    boolean f = find(grid, row + val, col, val, visited);
+    if (!f) return false;
+
+    if (grid.get(row)[col] == '[' && !visited[row][col + 1]) {
+      return find(grid, row, col + 1, val, visited);
+    } else if (grid.get(row)[col] == ']' && !visited[row][col - 1]) {
+      return find(grid, row, col - 1, val, visited);
     }
-    return nextLoc;
+
+    return true;
+  }
+
+  void changeGrid(List<char[]> grid, int row, int col, int val, boolean[][] visited, char prev) {
+    if (row < 0 || row > grid.size() || col < 0 || col > grid.getFirst().length - 1 || grid.get(row)[col] == '#') {
+      return;
+    }
+
+    visited[row][col] = true;
+
+    if (grid.get(row)[col] == '.') {
+      grid.get(row)[col] = prev;
+      return;
+    }
+
+    changeGrid(grid, row + val, col, val, visited, grid.get(row)[col]);
+
+    if (grid.get(row)[col] == '[' && !visited[row][col + 1]) {
+      char ch = '.';
+      changeGrid(grid, row, col + 1, val, visited, ch);
+    } else if (grid.get(row)[col] == ']' && !visited[row][col - 1]) {
+      char ch = '.';
+      changeGrid(grid, row, col - 1, val, visited, ch);
+    }
+
+    grid.get(row)[col] = prev;
   }
 
   long start() {
@@ -99,15 +168,42 @@ public class Solution {
       int currRow = -1, currCol = -1;
 
       while (sc.hasNextLine()) {
-        String line = sc.nextLine();
-        if (line.isEmpty()) {
+        String l = sc.nextLine();
+        if (l.isEmpty()) {
           break;
         }
-        if (line.contains("@")) {
+
+        StringBuilder line = new StringBuilder();
+        for (int i = 0; i < l.length(); i++) {
+          char ch = l.charAt(i);
+          switch (ch) {
+            case '#':
+              line.append("##");
+              break;
+
+            case 'O':
+              line.append("[]");
+              break;
+
+            case '.':
+              line.append("..");
+              break;
+
+            case '@':
+              line.append("@.");
+              break;
+
+            default:
+              line.append(ch);
+              break;
+          }
+        }
+
+        if (line.toString().contains("@")) {
           currRow = grid.size();
           currCol = line.indexOf("@");
         }
-        grid.add(line.toCharArray());
+        grid.add(line.toString().toCharArray());
       }
 
       Location loc = new Location(currRow, currCol);
