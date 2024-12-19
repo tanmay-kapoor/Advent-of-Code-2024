@@ -5,10 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Solution {
-  String aocDir = System.getProperty("user.dir");
-  int dayNum = 0;
-  String fileName = "sample.txt";
-  String inputFilePath = String.format("%s/src/day%02d/%s", aocDir, dayNum, fileName);
+  int dayNum;
+  String aocDir, fileName, inputFilePath;
 
 
   long start() throws FileNotFoundException {
@@ -21,6 +19,13 @@ public class Solution {
     }
 
     return ans;
+  }
+
+  public Solution() {
+    this.aocDir = System.getProperty("user.dir");
+    this.dayNum = 0;
+    this.fileName = "sample.txt";
+    this.inputFilePath = String.format("%s/src/day%02d/%s", aocDir, dayNum, fileName);
   }
 
   public static void main(String[] args) {
