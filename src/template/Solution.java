@@ -5,28 +5,30 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Solution {
-  int start() {
-    String dir = System.getProperty("user.dir") + "/src";
-    File file = new File(dir + "/template/sample.txt");
+  String aocDir = System.getProperty("user.dir");
+  int dayNum = 0;
+  String fileName = "sample.txt";
+  String inputFilePath = String.format("%s/src/day%02d/%s", aocDir, dayNum, fileName);
 
-    int ans = 0;
-    try {
-      Scanner sc = new Scanner(file);
 
-      while (sc.hasNextLine()) {
-        String line = sc.nextLine();
+  long start() throws FileNotFoundException {
+    Scanner sc = new Scanner(new File(inputFilePath));
+    long ans = 0L;
 
-      }
-
-      return ans;
-    } catch (FileNotFoundException e) {
-      System.out.println("File not found");
+    while (sc.hasNextLine()) {
+      String line = sc.nextLine();
+      System.out.println(line);
     }
+
     return ans;
   }
 
   public static void main(String[] args) {
     Solution ob = new Solution();
-    System.out.println(ob.start());
+    try {
+      System.out.println(ob.start());
+    } catch (FileNotFoundException e) {
+      System.out.println("File not found");
+    }
   }
 }
